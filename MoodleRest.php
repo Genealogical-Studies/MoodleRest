@@ -317,7 +317,7 @@ class MoodleRest
      * @param string $method The method used to request data (get or post)
      * @param string $returned_data The data returned by Moodle webservice
      */
-    private function debug($url, $webservice_function, $method, $returned_data)
+    private function debug($url, $webservice_function, $method, $returned_data, $data = null)
     {
         if ($this->debug) {
             $line_break = php_sapi_name() == 'cli' ? "\n" : '<br />';
@@ -327,6 +327,9 @@ class MoodleRest
             echo $line_break;
             echo '[debug][' . strtoupper($method) . '] ' . get_class($this) . "::request( $webservice_function )$line_break";
             echo "$url $line_break";
+            if ($data) {
+                echo "Data: $data $line_break";
+            }
             if (is_array($returned_data) || is_object($returned_data)) {
                 print_r($returned_data);
             } else {
@@ -457,7 +460,7 @@ class MoodleRest
                 throw new Exception('MoodleRest: Error trying to connect to Moodle server on POST request. Check PHP warning messages.');
             }
 
-            $this->debug($this->getUrl(), $function, self::METHOD_POST, $moodle_request);
+            $this->debug($post_url, $function, self::METHOD_POST, $moodle_request, $query_string);
         }
 
         $this->setRawData($moodle_request);
